@@ -56,9 +56,33 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-ftp</artifactId>
+			<version>3.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.4.5</version>
+		</dependency>
 	</dependencies>
 
+	<distributionManagement>
+		<repository>
+			<id>ftp-repository</id>
+			<url>ftp://217.182.78.197/home/ubuntu/Desktop/apartmentRentServvice</url>
+		</repository>
+	</distributionManagement>
+
 	<build>
+		<extensions>
+			<!-- Enabling the use of FTP -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

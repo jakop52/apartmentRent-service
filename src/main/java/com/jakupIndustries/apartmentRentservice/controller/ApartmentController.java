@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/apartments")
@@ -15,12 +16,20 @@ public class ApartmentController {
 
 
     @GetMapping
-    public List<Apartment> getAllApartments(){
+    public List<Apartment> getAllApartments() {
         return this.apartmentRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Optional<Apartment> getApartmentById(@PathVariable(value = "id") Long id) {
+        return this.apartmentRepository.findById(id);
+    }
+
+
     @PostMapping
-    public Apartment createUser(@RequestBody Apartment apartment) {
+    public Apartment createApartment(@RequestBody Apartment apartment) {
         return this.apartmentRepository.save(apartment);
     }
+
+    //USUWANIE APARTAMENTU PO ID
 }

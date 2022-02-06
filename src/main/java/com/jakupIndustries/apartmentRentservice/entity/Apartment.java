@@ -1,13 +1,18 @@
 package com.jakupIndustries.apartmentRentservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
-@Table(name="apartments",uniqueConstraints = {
+@Table(name = "apartments", uniqueConstraints = {
         @UniqueConstraint(columnNames = "id")
 })
 public class Apartment {
@@ -20,7 +25,36 @@ public class Apartment {
     private int floor;
     private int rooms;
 
-    public Apartment() {}
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    //@JsonBackReference
+    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles"})
+    private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "rentier_id", nullable = true)
+    //@JsonBackReference
+    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles"})
+    private User rentier;
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public User getRentier() {
+        return rentier;
+    }
+
+    public void setRentier(User rentier) {
+        this.rentier = rentier;
+    }
+
+    public Apartment() {
+    }
 
     public Apartment(long id, String name, String address, float area, int floor, int rooms) {
         this.id = id;
