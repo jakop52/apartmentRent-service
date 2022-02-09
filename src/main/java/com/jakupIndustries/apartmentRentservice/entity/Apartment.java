@@ -25,6 +25,9 @@ public class Apartment {
     private int floor;
     private int rooms;
 
+    @OneToMany(mappedBy = "apartment")
+    private Set<RentRequest> rentRequests;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     //@JsonBackReference

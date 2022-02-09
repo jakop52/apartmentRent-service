@@ -26,20 +26,26 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //@JsonManagedReference
     @JsonIgnoreProperties()
     private Set<Apartment> ownedApartments;
 
-    @OneToMany(mappedBy = "rentier",cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "rentier", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //@JsonManagedReference
     //@JsonIgnoreProperties({"owner","rentier"})
     @JsonIgnoreProperties()
     private Set<Apartment> rentedApartments;
 
-    public User(){}
+    //TODO rent request should be visible in JSON
+    @OneToMany(mappedBy = "user")
+    private Set<RentRequest> rentRequests;
+
+    public User() {
+    }
 
     public long getId() {
         return id;
@@ -95,5 +101,13 @@ public class User {
 
     public void setRentedApartments(Set<Apartment> rentedApartments) {
         this.rentedApartments = rentedApartments;
+    }
+
+    public Set<RentRequest> getRentRequests() {
+        return rentRequests;
+    }
+
+    public void setRentRequests(Set<RentRequest> rentRequests) {
+        this.rentRequests = rentRequests;
     }
 }
