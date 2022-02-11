@@ -1,10 +1,7 @@
 package com.jakupIndustries.apartmentRentservice.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,13 +28,13 @@ public class Apartment {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     //@JsonBackReference
-    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles"})
+    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles","rentRequests"})
     private User owner;
 
     @ManyToOne
     @JoinColumn(name = "rentier_id", nullable = true)
     //@JsonBackReference
-    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles"})
+    @JsonIgnoreProperties({"rentedApartments","ownedApartments","roles","rentRequests"})
     private User rentier;
 
     public User getOwner() {

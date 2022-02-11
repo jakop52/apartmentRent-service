@@ -32,6 +32,9 @@ public class ApartmentController {
         return this.apartmentRepository.findById(id);
     }
 
+    @GetMapping("/notRented")
+    public List<Apartment> getNotRentedApartments(){return this.apartmentRepository.findByRentier(null);}
+
 
     @PostMapping("/forced")
     public Apartment createApartment(@RequestBody Apartment apartment) {
@@ -48,9 +51,10 @@ public class ApartmentController {
         return this.apartmentRepository.save(newApartment);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteApartmentByID(@CurrentSecurityContext(expression = "authentication?.name")
-                                                         String email, @RequestBody Apartment apartment) {
+                                                         String email, @PathVariable(value = "id") Long id) {
+        Apartment apartment = this.apartmentRepository.findById(id).get();
         if (apartment.getOwner().getId() == this.userRepository.findByEmail(email).get().getId()) {
             this.apartmentRepository.delete(apartment);//TODO Rentier id must be null to delete
             return new ResponseEntity<>(HttpStatus.OK);

@@ -8,6 +8,7 @@ import com.jakupIndustries.apartmentRentservice.repository.ApartmentRepository;
 import com.jakupIndustries.apartmentRentservice.repository.RentRepository;
 import com.jakupIndustries.apartmentRentservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -29,20 +30,22 @@ public class RentController {
     @Autowired
     private ApartmentRepository apartmentRepository;
 
-    @PostMapping //TODO USERID IS UNNNECESSARY - I CAN GET IT FROM CurrentSecurityContext && USER CAN ADD MORE THEN ONE REQUEST PER APARTMENT
+    @PutMapping("/{apartmentID}")
+    //TODO USERID IS UNNNECESSARY - I CAN GET IT FROM CurrentSecurityContext && USER CAN ADD MORE THEN ONE REQUEST PER APARTMENT
     public ResponseEntity<String> postRentRequest(@CurrentSecurityContext(expression = "authentication?.name")
-                                                               String email, @RequestBody RentRequestDTO rentRequestDTO) {
+                                                          String email, @PathVariable(value = "apartmentID") Long apartmentID) {
         User user = this.userRepository.findByEmail(email).get();
-        Apartment apartment = this.apartmentRepository.findById(rentRequestDTO.getApartmentID()).get();
+        Apartment apartment = this.apartmentRepository.findById(apartmentID).get();
 
-        if (rentRequestDTO.getUserID() == user.getId()) {
-            if (apartment.getOwner() != user) {
-                this.rentRepository.save(new RentRequest(apartment, user));
-                return new ResponseEntity<>("Rent request created",HttpStatus.OK);
-            } else return new ResponseEntity<>("You cannot request own apartment",HttpStatus.UNAUTHORIZED);
+        if (apartment.getOwner() != user) {
+            if(apartment.getRentier()==null){
+                if(!this.rentRepository.exists(Example.of(new RentRequest(apartment,user)))){
+                    this.rentRepository.save(new RentRequest(apartment, user));
+                    return new ResponseEntity<>("Rent request created", HttpStatus.OK);
+                }else return new ResponseEntity<>("This rent request exist",HttpStatus.CONFLICT);
 
-        } else return new ResponseEntity<>("",HttpStatus.UNAUTHORIZED);
-
+            } else return new ResponseEntity<>("You cannot request rented apartment", HttpStatus.UNAUTHORIZED);
+            }else return new ResponseEntity<>("You cannot request own apartment", HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/{apartmentID}")

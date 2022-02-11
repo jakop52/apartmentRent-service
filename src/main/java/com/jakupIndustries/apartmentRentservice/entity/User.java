@@ -31,13 +31,13 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //@JsonManagedReference
-    @JsonIgnoreProperties()
+    @JsonIgnoreProperties({"rentRequests"})
     private Set<Apartment> ownedApartments;
 
     @OneToMany(mappedBy = "rentier", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     //@JsonManagedReference
     //@JsonIgnoreProperties({"owner","rentier"})
-    @JsonIgnoreProperties()
+    @JsonIgnoreProperties({"rentRequests"})
     private Set<Apartment> rentedApartments;
 
     //TODO rent request should be visible in JSON
